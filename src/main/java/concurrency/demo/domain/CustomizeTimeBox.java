@@ -13,15 +13,13 @@ import jakarta.persistence.ManyToOne;
 @Entity
 public class CustomizeTimeBox {
 
-    public static final int TIME_MULTIPLIER = 2;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_id")
-    private CustomizeTable customizeTable;
+    private CustomizeTable table;
 
     private int sequence;
 
@@ -38,7 +36,7 @@ public class CustomizeTimeBox {
 
     private Integer timePerSpeaking;
 
-    public CustomizeTimeBox(CustomizeTable customizeTable,
+    public CustomizeTimeBox(CustomizeTable table,
                             int sequence,
                             Stance stance,
                             String speechType,
@@ -46,7 +44,7 @@ public class CustomizeTimeBox {
                             Integer timePerTeam,
                             Integer timePerSpeaking,
                             String speaker) {
-        this.customizeTable = customizeTable;
+        this.table = table;
         this.sequence = sequence;
         this.stance = stance;
         this.time = time;
@@ -70,8 +68,8 @@ public class CustomizeTimeBox {
         return id;
     }
 
-    public CustomizeTable getCustomizeTable() {
-        return customizeTable;
+    public CustomizeTable getTable() {
+        return table;
     }
 
     public int getSequence() {
