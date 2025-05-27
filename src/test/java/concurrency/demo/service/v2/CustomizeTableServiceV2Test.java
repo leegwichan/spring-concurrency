@@ -1,4 +1,4 @@
-package concurrency.demo.service.v4;
+package concurrency.demo.service.v2;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,14 +16,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("v4")
-class CustomizeTableServiceV4Test extends ServiceTest {
+@ActiveProfiles("v2")
+class CustomizeTableServiceV2Test extends ServiceTest {
 
     @Autowired
     private CustomizeTableService customizeService;
 
     @Test
-    void updateTableTest_whenRunAtSameTime_updateNormally() throws InterruptedException {
+    void updateTableTest_whenRunAtSameTime_savedDuplicated() throws InterruptedException {
         // Given (Setup)
         Member member = memberRepository.save(new Member("default@gmail.com"));
         CustomizeTable table = customizeTableRepository.save(
@@ -44,9 +44,13 @@ class CustomizeTableServiceV4Test extends ServiceTest {
                 ));
 
         // When
-        runAtSameTime(1_000, () -> customizeService.updateTable(request, table.getId(), member.getId()));
+        runAtSameTime(2, () -> customizeService.updateTable(request, table.getId(), member.getId()));
 
         // Then
         assertThat(customizeTimeBoxRepository.count()).isEqualTo(2);
+        /*
+        * Problem : 데드락 발생
+        *  Deadlock detected. The current transaction was rolled back
+        * */
     }
 }

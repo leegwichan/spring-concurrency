@@ -1,4 +1,4 @@
-package concurrency.demo.service.v4;
+package concurrency.demo.service.v3;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,14 +16,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("v4")
-class CustomizeTableServiceV4Test extends ServiceTest {
+@ActiveProfiles("v3")
+class CustomizeTableServiceV3Test extends ServiceTest {
 
     @Autowired
     private CustomizeTableService customizeService;
 
     @Test
-    void updateTableTest_whenRunAtSameTime_updateNormally() throws InterruptedException {
+    void updateTableTest_whenRunAtSameTime_savedDuplicated() throws InterruptedException {
         // Given (Setup)
         Member member = memberRepository.save(new Member("default@gmail.com"));
         CustomizeTable table = customizeTableRepository.save(
