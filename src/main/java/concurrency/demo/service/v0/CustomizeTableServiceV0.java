@@ -1,25 +1,28 @@
-package concurrency.demo.service.v4;
+package concurrency.demo.service.v0;
 
 import concurrency.demo.domain.CustomizeTable;
+import concurrency.demo.domain.CustomizeTimeBox;
 import concurrency.demo.domain.Member;
 import concurrency.demo.dto.CustomizeTableCreateRequest;
 import concurrency.demo.repository.CustomizeTableRepository;
 import concurrency.demo.repository.CustomizeTimeBoxRepository;
 import concurrency.demo.repository.MemberRepository;
 import concurrency.demo.service.CustomizeTableService;
+import java.util.List;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Profile("v4")
 @Service
-public class CustomizeTableServiceV4 implements CustomizeTableService {
+@Profile("v0")
+public class CustomizeTableServiceV0 implements CustomizeTableService {
 
     private final MemberRepository memberRepository;
     private final CustomizeTableRepository tableRepository;
     private final CustomizeTimeBoxRepository timeBoxRepository;
 
-    public CustomizeTableServiceV4(MemberRepository memberRepository, CustomizeTableRepository tableRepository,
+    public CustomizeTableServiceV0(MemberRepository memberRepository,
+                                   CustomizeTableRepository tableRepository,
                                    CustomizeTimeBoxRepository timeBoxRepository) {
         this.memberRepository = memberRepository;
         this.tableRepository = tableRepository;
@@ -36,7 +39,8 @@ public class CustomizeTableServiceV4 implements CustomizeTableService {
         CustomizeTable renewedTable = tableCreateRequest.toTable(member);
         existingTable.updateTable(renewedTable);
 
-        timeBoxRepository.deleteAllByTable(existingTable); // 조회 -> 수정 로직을 바로 수정하도록 함
+        List<CustomizeTimeBox> existingTimeBoxes = timeBoxRepository.findAllByTable(existingTable);
+        timeBoxRepository.deleteAll(existingTimeBoxes);
         timeBoxRepository.saveAll(tableCreateRequest.toTimeBoxes(existingTable));
     }
 }

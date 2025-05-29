@@ -47,8 +47,10 @@ class CustomizeTableServiceV1Test extends ServiceTest {
         runAtSameTime(2, () -> customizeService.updateTable(request, table.getId(), member.getId()));
 
         // Then
-        assertThat(customizeTimeBoxRepository.count())
-                .isNotEqualTo(2)
-                .isEqualTo(4);
+        assertThat(customizeTimeBoxRepository.count()).isEqualTo(2);
+        /*
+        * Problem : 데드락 발생
+        *  Deadlock detected. The current transaction was rolled back
+        * */
     }
 }

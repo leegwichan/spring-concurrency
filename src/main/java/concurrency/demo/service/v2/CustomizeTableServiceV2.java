@@ -11,7 +11,6 @@ import concurrency.demo.service.CustomizeTableService;
 import java.util.List;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -31,11 +30,12 @@ public class CustomizeTableServiceV2 implements CustomizeTableService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE) // 트랜잭션 격리 수준 증가
+    @Transactional
     public void updateTable(CustomizeTableCreateRequest tableCreateRequest, long tableId, long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("Member not found for the given ID"));
-        CustomizeTable existingTable = tableRepository.findByIdAndMember(tableId, member)
+        // Table 조회 시, 쓰기 락을 가져옴
+        CustomizeTable existingTable = tableRepository.findByIdAndMemberWithLock(tableId, member)
                 .orElseThrow(() -> new RuntimeException("Table not found for the given ID and member ID"));
         CustomizeTable renewedTable = tableCreateRequest.toTable(member);
         existingTable.updateTable(renewedTable);
