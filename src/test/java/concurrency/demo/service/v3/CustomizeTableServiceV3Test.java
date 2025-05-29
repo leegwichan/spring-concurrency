@@ -23,7 +23,7 @@ class CustomizeTableServiceV3Test extends ServiceTest {
     private CustomizeTableService customizeService;
 
     @Test
-    void updateTableTest_whenRunAtSameTime_updateNormally() throws InterruptedException {
+    void updateTableTest_whenRunAtSameTime_updatedNormally() throws InterruptedException {
         // Given (Setup)
         Member member = memberRepository.save(new Member("default@gmail.com"));
         CustomizeTable table = customizeTableRepository.save(
